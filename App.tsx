@@ -1,10 +1,10 @@
+import {Button, Text} from 'react-native';
 import { StatusBar } from "expo-status-bar";
 import { NavigationContainer, RouteProp } from "@react-navigation/native";
 import {
   createNativeStackNavigator,
   NativeStackNavigationOptions,
 } from "@react-navigation/native-stack";
-import { Text, View } from "react-native";
 
 import { CATEGORIES, MEALS } from "./data";
 
@@ -14,10 +14,11 @@ import MealDetailsScreen from "./screens/meal-details";
 
 import { Screens } from "./utils/enums/navigation";
 import { RootStackParamList } from "./utils/types/navigation";
+import IconButton from "./components/icon-button";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-export default function App() {
+const App = () => {
   const appHeaderOptions: NativeStackNavigationOptions = {
     headerStyle: { backgroundColor: "#351401" },
     headerTitleStyle: { color: "#ffffff" },
@@ -25,6 +26,8 @@ export default function App() {
     headerTintColor: "#ffffff",
     contentStyle: { backgroundColor: "#3f2f25" },
   };
+  
+  const onMealDetailsHeaderRightPress = () => {};
 
   const getMealsCategoryTitle = (id: string) =>
     CATEGORIES.find((category) => category.id === id)?.title;
@@ -49,6 +52,7 @@ export default function App() {
   }) => ({
     title: getMealTitle(mealId),
     headerBackTitle: `${getMealsCategoryTitle(category)}`,
+    headerRight: () => <IconButton icon='star' onPress={onMealDetailsHeaderRightPress}/>
   });
 
   return (
@@ -83,4 +87,6 @@ export default function App() {
       </NavigationContainer>
     </>
   );
-}
+};
+
+export default App;
