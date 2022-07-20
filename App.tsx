@@ -15,6 +15,8 @@ import IconButton from "./components/icon-button";
 
 import {Screens} from "./utils/enums/navigation";
 import {RootDrawerParamList, RootStackParamList} from "./utils/types/navigation";
+import {Provider} from "react-redux";
+import store from "./store/redux";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Drawer = createDrawerNavigator<RootDrawerParamList>();
@@ -75,10 +77,10 @@ const App = () => {
 		route: RouteProp<RootStackParamList, Screens.mealDetails>;
 		navigation: any;
 	}) => NativeStackNavigationOptions = ({
-																					route: {
-																						params: {id: mealId, category},
-																					},
-																				}) => ({
+		route: {
+			params: {id: mealId, category},
+		},
+	}) => ({
 		title: getMealTitle(mealId),
 		headerBackTitle: `${getMealsCategoryTitle(category)}`,
 		headerRight: () => <IconButton icon='star' onPress={onMealDetailsHeaderRightPress}/>
@@ -88,33 +90,35 @@ const App = () => {
 		<>
 			<StatusBar style="light"/>
 			
-			<NavigationContainer>
-				<Stack.Navigator
-					initialRouteName={Screens.drawer}
-					screenOptions={appHeaderOptions}
-				>
-					<Stack.Screen
-						name={Screens.drawer}
-						component={DrawerNavigator}
-						options={{
-							title: "All categories",
-							headerShown: false
-						}}
-					/>
-					
-					<Stack.Screen
-						name={Screens.meals}
-						component={MealsScreen}
-						options={getMealsScreenOptions}
-					/>
-					
-					<Stack.Screen
-						name={Screens.mealDetails}
-						component={MealDetailsScreen}
-						options={getMealDetailsScreenOptions}
-					/>
-				</Stack.Navigator>
-			</NavigationContainer>
+			<Provider store={store}>
+				<NavigationContainer>
+					<Stack.Navigator
+						initialRouteName={Screens.drawer}
+						screenOptions={appHeaderOptions}
+					>
+						<Stack.Screen
+							name={Screens.drawer}
+							component={DrawerNavigator}
+							options={{
+								title: "All categories",
+								headerShown: false
+							}}
+						/>
+						
+						<Stack.Screen
+							name={Screens.meals}
+							component={MealsScreen}
+							options={getMealsScreenOptions}
+						/>
+						
+						<Stack.Screen
+							name={Screens.mealDetails}
+							component={MealDetailsScreen}
+							options={getMealDetailsScreenOptions}
+						/>
+					</Stack.Navigator>
+				</NavigationContainer>
+			</Provider>
 		</>
 	);
 };

@@ -1,5 +1,9 @@
 import { View, Text, Image, ScrollView } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+
+import {useAppDispatch, useAppSelector} from "../../store/redux";
+import {addFavourite, removeFavourite} from "../../store/redux/slices/favourites";
+
 import MealDetail from "../../components/meal-detail";
 
 import { MEALS } from "../../data";
@@ -8,12 +12,19 @@ import { Screens } from "../../utils/enums/navigation";
 import { RootStackParamList } from "../../utils/types/navigation";
 
 import styles from "./meal-details.styles";
+import IconButton from "../../components/icon-button";
 
 const MealDetailsScreen = ({
+  navigation,
   route: {
     params: { id },
   },
 }: NativeStackScreenProps<RootStackParamList, Screens.mealDetails>) => {
+  const favouriteMeals = useAppSelector(state => state.favourites.ids);
+  const dispatch = useAppDispatch();
+  
+  const isMealFavourite = favouriteMeals.includes(id);
+  
   const {
     affordability,
     complexity,
@@ -46,6 +57,16 @@ const MealDetailsScreen = ({
       visible: isVegetarian,
     },
   ].filter((item) => item.visible);
+  
+  const onFavouriteTogglePress = () => {
+    dispatch(isMealFavourite ? removeFavourite({id}) : addFavourite({id}));
+  }
+  
+  navigation.setOptions({
+    headerRight: () => (
+      <IconButton icon={isMealFavourite ? 'star' : 'star-outline'} color='white' onPress={onFavouriteTogglePress} />
+    )
+  })
 
   return (
     <ScrollView style={styles.container}>
